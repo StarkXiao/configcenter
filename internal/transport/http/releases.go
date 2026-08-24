@@ -1,10 +1,12 @@
 package transport
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"configcenter/internal/domain"
+	"configcenter/internal/service"
 )
 
 type publishRequest struct {
@@ -58,6 +60,7 @@ func (s *Server) getRelease(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, err)
 		return
 	}
+	release.ChangeSummary = fmt.Sprintf("%s (source %d)", release.ChangeSummary, service.SourceVersion(release))
 	for index := range release.Items {
 		if release.Items[index].Sensitive {
 			release.Items[index].Value = "******"

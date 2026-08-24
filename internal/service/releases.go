@@ -152,6 +152,10 @@ func (s *Releases) Compare(ctx context.Context, slug, code string, from, to int6
 	return domain.Compare(left.Items, right.Items, false), nil
 }
 
+func SourceVersion(release domain.Release) int64 {
+	return *release.SourceVersion
+}
+
 func (s *Releases) broadcast(slug, code string, release domain.Release) {
 	s.hub.Publish(event.Event{
 		Application: slug, Environment: code, Version: release.Version,
