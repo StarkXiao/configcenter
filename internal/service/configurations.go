@@ -41,6 +41,7 @@ func (s *Configurations) SaveDraft(ctx context.Context, slug, code string, revis
 	if err := domain.ValidateItems(items); err != nil {
 		return domain.Draft{}, err
 	}
+	items = append([]domain.ConfigItem(nil), items...)
 	operator = strings.TrimSpace(operator)
 	if len(operator) < 2 || len(operator) > 80 {
 		return domain.Draft{}, domain.NewError(domain.CodeInvalid, "operator must contain 2 to 80 characters")

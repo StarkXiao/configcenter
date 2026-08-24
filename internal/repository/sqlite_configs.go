@@ -76,13 +76,13 @@ func (s *SQLite) SaveDraft(ctx context.Context, environmentID, expectedRevision 
 }
 
 func insertDraftItems(ctx context.Context, tx *sql.Tx, environmentID int64, items []domain.ConfigItem) error {
-	statement, err := tx.PrepareContext(ctx, `INSERT INTO draft_items
- (environment_id, config_key, config_value, value_type, description, sensitive) VALUES (?, ?, ?, ?, ?, ?)`)
-	if err != nil {
-		return mapSQLError(err, "draft")
-	}
-	defer statement.Close()
 	for _, item := range items {
+		statement, err := tx.PrepareContext(ctx, `INSERT INTO draft_items
+ (environment_id, config_key, config_value, value_type, description, sensitive) VALUES (?, ?, ?, ?, ?, ?)`)
+		if err != nil {
+			return mapSQLError(err, "draft")
+		}
+		defer statement.Close()
 		if _, err := statement.ExecContext(ctx, environmentID, item.Key, item.Value, item.Type,
 			item.Description, item.Sensitive); err != nil {
 			return mapSQLError(err, "draft")
