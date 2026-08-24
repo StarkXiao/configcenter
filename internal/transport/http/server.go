@@ -1,6 +1,7 @@
 package transport
 
 import (
+	"context"
 	"embed"
 	"io/fs"
 	"log/slog"
@@ -74,7 +75,7 @@ func (s *Server) health(w http.ResponseWriter, _ *http.Request) {
 }
 
 func (s *Server) ready(w http.ResponseWriter, r *http.Request) {
-	if err := s.repository.Ping(r.Context()); err != nil {
+	if err := s.repository.Ping(context.Background()); err != nil {
 		writeError(w, r, err)
 		return
 	}
