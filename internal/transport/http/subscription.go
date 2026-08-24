@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"configcenter/internal/event"
@@ -18,6 +19,7 @@ func (s *Server) subscribe(w http.ResponseWriter, r *http.Request) {
 	}
 	app := r.PathValue("app")
 	environment := r.PathValue("env")
+	app = strings.ToLower(app)
 	token := service.ConstantTimeToken(r.Header.Get("Authorization"))
 	release, err := s.configurations.Current(r.Context(), app, environment, token)
 	if err != nil {
