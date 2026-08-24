@@ -48,6 +48,7 @@ func (s *Server) securityHeaders(next http.Handler) http.Handler {
 func (s *Server) requestLog(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		started := time.Now()
+		r = r.WithContext(context.Background())
 		next.ServeHTTP(w, r)
 		s.logger.Info("http request", slog.String("method", r.Method), slog.String("path", r.URL.Path),
 			slog.Duration("duration", time.Since(started)), slog.String("request_id", requestID(r)))
