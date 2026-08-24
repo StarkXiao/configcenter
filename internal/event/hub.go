@@ -88,7 +88,7 @@ func (h *Hub) replayLocked(application, environment, lastEventID string) ([]Even
 			return nil, false
 		}
 	}
-	items := make([]Event, 0)
+	items := h.history[:0]
 	for _, item := range h.history {
 		id, _ := strconv.ParseUint(item.ID, 10, 64)
 		if id > last && item.Application == application && item.Environment == environment {

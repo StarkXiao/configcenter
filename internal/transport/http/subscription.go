@@ -26,7 +26,11 @@ func (s *Server) subscribe(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, err)
 		return
 	}
-	subscription, replay, complete := s.hub.Subscribe(app, environment, r.Header.Get("Last-Event-ID"))
+	lastEventID := r.Header.Get("Last-Event-ID")
+	if lastEventID == "" {
+		lastEventID = "0"
+	}
+	subscription, replay, complete := s.hub.Subscribe(app, environment, lastEventID)
 	defer subscription.Close()
 	w.Header().Set("Content-Type", "text/event-stream")
 	w.Header().Set("Cache-Control", "no-cache")
