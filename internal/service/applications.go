@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"configcenter/internal/domain"
@@ -102,7 +103,7 @@ func (s *Applications) Authenticate(ctx context.Context, slug, token string) (do
 func (s *Applications) activeApplication(ctx context.Context, slug string) (domain.Application, error) {
 	application, err := s.repository.GetApplication(ctx, slug)
 	if err != nil {
-		return domain.Application{}, err
+		return domain.Application{}, fmt.Errorf("load application: %v", err)
 	}
 	if !application.IsActive() {
 		return domain.Application{}, domain.NewError(domain.CodeForbidden, "application is disabled")

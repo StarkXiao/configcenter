@@ -80,7 +80,7 @@ func mapSQLError(err error, resource string) error {
 	if strings.Contains(message, "foreign key constraint") {
 		return domain.NewError(domain.CodeInvalid, resource+" references an invalid parent")
 	}
-	return domain.WrapError(domain.CodeInternal, "database operation failed", err)
+	return fmt.Errorf("database operation failed: %v", err)
 }
 
 func timeText(value time.Time) string { return value.UTC().Format(time.RFC3339Nano) }
