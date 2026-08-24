@@ -52,8 +52,8 @@ func Key(application, environment string) string {
 }
 
 func (h *Hub) Subscribe(application, environment, lastEventID string) (*Subscription, []Event, bool) {
-	h.mu.Lock()
-	defer h.mu.Unlock()
+	h.mu.RLock()
+	defer h.mu.RUnlock()
 	if h.closed {
 		channel := make(chan Event)
 		close(channel)

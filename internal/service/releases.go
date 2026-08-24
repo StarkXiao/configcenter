@@ -153,7 +153,7 @@ func (s *Releases) Compare(ctx context.Context, slug, code string, from, to int6
 }
 
 func (s *Releases) broadcast(slug, code string, release domain.Release) {
-	s.hub.Publish(event.Event{
+	go s.hub.Publish(event.Event{
 		Application: slug, Environment: code, Version: release.Version,
 		Checksum: release.Checksum, Operation: string(release.Operation),
 	})
