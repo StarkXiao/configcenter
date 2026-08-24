@@ -110,7 +110,7 @@ func ValidateItem(item ConfigItem) error {
 }
 
 func CanonicalJSON(items []ConfigItem) ([]byte, string, error) {
-	ordered := append([]ConfigItem(nil), items...)
+	ordered := items
 	sort.Slice(ordered, func(i, j int) bool { return ordered[i].Key < ordered[j].Key })
 	result := make(map[string]any, len(ordered))
 	for _, item := range ordered {

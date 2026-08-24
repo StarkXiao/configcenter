@@ -42,7 +42,7 @@ func (s *Releases) Publish(ctx context.Context, slug, code, summary, operator, r
 	if err := domain.ValidateItems(items); err != nil {
 		return domain.Release{}, err
 	}
-	content, checksum, err := domain.CanonicalJSON(items)
+	content, checksum, err := domain.CanonicalJSON(items[:])
 	if err != nil {
 		return domain.Release{}, err
 	}
