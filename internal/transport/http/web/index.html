@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Go Config Center</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">GC</span>
+      <div><strong>Go Config Center</strong><small>配置管理控制台</small></div>
+    </div>
+    <div class="session">
+      <span id="health" class="status offline">服务未连接</span>
+      <label>操作人<input id="operator" value="admin" autocomplete="name"></label>
+      <label>管理令牌<input id="admin-token" type="password" placeholder="输入启动令牌" autocomplete="current-password"></label>
+      <button id="connect" class="primary">连接</button>
+    </div>
+  </header>
+
+  <div class="workspace">
+    <aside class="sidebar">
+      <div class="sidebar-heading"><h2>应用</h2><button id="add-app" class="icon-button" title="新增应用">+</button></div>
+      <div id="apps" class="app-list"><p class="empty">连接后加载应用</p></div>
+    </aside>
+
+    <main>
+      <section class="context-bar">
+        <div><h1 id="current-app">选择应用</h1><p id="app-description">集中维护各环境配置</p></div>
+        <button id="add-env" disabled>新增环境</button>
+      </section>
+
+      <nav id="environments" class="tabs" aria-label="环境"></nav>
+
+      <section id="empty-state" class="welcome">
+        <h2>尚未选择配置空间</h2>
+        <p>从左侧选择应用和环境。</p>
+      </section>
+
+      <div id="environment-view" hidden>
+        <div class="toolbar">
+          <div class="version-meta">
+            <strong id="env-name">环境</strong>
+            <span>线上版本 <b id="current-version">0</b></span>
+            <span>草稿修订 <b id="draft-revision">0</b></span>
+            <span id="stream-state" class="status offline">未订阅</span>
+          </div>
+          <div class="actions">
+            <button id="refresh" title="刷新">↻</button>
+            <button id="view-diff">查看差异</button>
+            <button id="save-draft">保存草稿</button>
+            <button id="publish" class="primary">发布配置</button>
+          </div>
+        </div>
+
+        <section class="config-section">
+          <div class="section-heading"><div><h2>配置草稿</h2><p>草稿保存后不会影响客户端，发布后才会生效。</p></div><button id="add-row">新增配置</button></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>配置键</th><th>类型</th><th>值</th><th>敏感</th><th>说明</th><th></th></tr></thead>
+              <tbody id="config-rows"></tbody>
+            </table>
+          </div>
+          <p id="config-empty" class="empty">当前草稿为空。</p>
+        </section>
+
+        <section class="history-section">
+          <div class="section-heading"><div><h2>发布历史</h2><p>每次发布和回滚都会保留不可变快照。</p></div></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>版本</th><th>操作</th><th>说明</th><th>操作人</th><th>时间</th><th></th></tr></thead>
+              <tbody id="release-rows"></tbody>
+            </table>
+          </div>
+          <p id="history-empty" class="empty">暂无发布版本。</p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <dialog id="form-dialog">
+    <form method="dialog" id="entity-form">
+      <div class="dialog-heading"><h2 id="form-title">新增</h2><button value="cancel" class="icon-button" title="关闭">×</button></div>
+      <label>名称<input id="entity-name" required maxlength="80"></label>
+      <label id="code-field">标识<input id="entity-code" required maxlength="60"></label>
+      <label>说明<textarea id="entity-description" rows="3" maxlength="300"></textarea></label>
+      <div class="dialog-actions"><button value="cancel">取消</button><button id="entity-submit" value="default" class="primary">确定</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="action-dialog">
+    <form method="dialog" id="action-form">
+      <div class="dialog-heading"><h2 id="action-title">发布配置</h2><button value="cancel" class="icon-button" title="关闭">×</button></div>
+      <p id="action-copy"></p>
+      <label id="target-field" hidden>目标版本<select id="target-version"></select></label>
+      <label>说明<textarea id="action-reason" rows="4" required minlength="2" maxlength="300"></textarea></label>
+      <div class="dialog-actions"><button value="cancel">取消</button><button id="action-submit" value="default" class="danger">确认</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="diff-dialog">
+    <div class="dialog-heading"><h2>配置差异</h2><button id="close-diff" class="icon-button" title="关闭">×</button></div>
+    <div id="diff-content" class="diff-content"></div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+  <script src="/app.js"></script>
+</body>
+</html>
