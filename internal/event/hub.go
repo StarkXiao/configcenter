@@ -2,6 +2,7 @@ package event
 
 import (
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -107,6 +108,7 @@ func (h *Hub) Publish(item Event) int {
 	item.ID = strconv.FormatUint(h.eventID, 10)
 	item.CreatedAt = time.Now().UTC()
 	h.history = append(h.history, item)
+	item.Application = strings.ToLower(item.Application)
 	if len(h.history) > h.historySize {
 		copy(h.history, h.history[len(h.history)-h.historySize:])
 		h.history = h.history[:h.historySize]
