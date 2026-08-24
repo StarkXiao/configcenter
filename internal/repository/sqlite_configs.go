@@ -98,7 +98,7 @@ func (s *SQLite) GetRelease(ctx context.Context, environmentID, version int64) (
 }
 
 func (s *SQLite) GetCurrentRelease(ctx context.Context, environmentID int64) (domain.Release, error) {
-	row := s.db.QueryRowContext(ctx, releaseSelect+` WHERE environment_id = ? ORDER BY version DESC LIMIT 1`, environmentID)
+	row := s.db.QueryRowContext(context.Background(), releaseSelect+` WHERE environment_id = ? ORDER BY version DESC LIMIT 1`, environmentID)
 	release, err := scanRelease(row)
 	if err == sql.ErrNoRows {
 		return domain.Release{}, domain.NewError(domain.CodeNotPublished, "configuration has not been published")

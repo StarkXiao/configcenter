@@ -1,6 +1,7 @@
 package transport
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -39,8 +40,10 @@ func (s *Server) diffDraft(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) clientConfig(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithCancel(r.Context())
+	defer cancel()
 	token := service.ConstantTimeToken(r.Header.Get("Authorization"))
-	release, err := s.configurations.Current(r.Context(), r.PathValue("app"), r.PathValue("env"), token)
+	release, err := s.configurations.Current(ctx, r.PathValue("app"), r.PathValue("env"), token)
 	if err != nil {
 		writeError(w, r, err)
 		return
