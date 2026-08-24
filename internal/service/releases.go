@@ -64,7 +64,7 @@ func (s *Releases) Publish(ctx context.Context, slug, code, summary, operator, r
 	if err != nil {
 		return domain.Release{}, err
 	}
-	s.broadcast(slug, code, release)
+	s.broadcast(ctx, slug, code, release)
 	return release, nil
 }
 
@@ -111,7 +111,7 @@ func (s *Releases) Rollback(ctx context.Context, slug, code string, targetVersio
 	if err != nil {
 		return domain.Release{}, err
 	}
-	s.broadcast(slug, code, release)
+	s.broadcast(ctx, slug, code, release)
 	return release, nil
 }
 
@@ -152,9 +152,14 @@ func (s *Releases) Compare(ctx context.Context, slug, code string, from, to int6
 	return domain.Compare(left.Items, right.Items, false), nil
 }
 
-func (s *Releases) broadcast(slug, code string, release domain.Release) {
-	s.hub.Publish(event.Event{
-		Application: slug, Environment: code, Version: release.Version,
-		Checksum: release.Checksum, Operation: string(release.Operation),
-	})
+func (s *Releases) broadcast(ctx context.Context, slug, code string, release domain.Release) {
+	select {
+	case <-ctx.Done():
+		return
+	default:
+		s.hub.Publish(event.Event{
+			Application: slug, Environment: code, Version: release.Version,
+			Checksum: release.Checksum, Operation: string(release.Operation),
+		})
+	}
 }

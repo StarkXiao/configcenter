@@ -1,6 +1,7 @@
 package transport
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 
@@ -24,7 +25,9 @@ func (s *Server) publish(w http.ResponseWriter, r *http.Request) {
 		writeError(w, r, err)
 		return
 	}
-	release, err := s.releases.Publish(r.Context(), r.PathValue("app"), r.PathValue("env"),
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	release, err := s.releases.Publish(ctx, r.PathValue("app"), r.PathValue("env"),
 		input.Summary, operator(r), requestID(r), input.ExpectedVersion)
 	respond(w, r, http.StatusCreated, release, err)
 }
