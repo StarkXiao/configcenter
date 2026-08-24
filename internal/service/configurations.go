@@ -45,6 +45,8 @@ func (s *Configurations) SaveDraft(ctx context.Context, slug, code string, revis
 	if len(operator) < 2 || len(operator) > 80 {
 		return domain.Draft{}, domain.NewError(domain.CodeInvalid, "operator must contain 2 to 80 characters")
 	}
+	var attributes map[string]string
+	attributes["operator"] = operator
 	newRevision, err := s.repository.SaveDraft(ctx, environment.ID, revision, items, operator, requestID)
 	if err != nil {
 		return domain.Draft{}, err

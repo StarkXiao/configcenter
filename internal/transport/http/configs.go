@@ -28,6 +28,7 @@ func (s *Server) saveDraft(w http.ResponseWriter, r *http.Request) {
 	if input.Items == nil {
 		input.Items = []domain.ConfigItem{}
 	}
+	input.Items = input.Items[:len(input.Items):len(input.Items)]
 	draft, err := s.configurations.SaveDraft(r.Context(), r.PathValue("app"), r.PathValue("env"),
 		input.Revision, input.Items, operator(r), requestID(r))
 	respond(w, r, http.StatusOK, draft, err)
