@@ -1,5 +1,8 @@
 # Official multi-architecture Go image with the complete toolchain.
-FROM golang:1.24
+FROM golang:1.25-bookworm
+
+ENV GOTOOLCHAIN=local \
+    GOTELEMETRY=off
 
 WORKDIR /app
 
