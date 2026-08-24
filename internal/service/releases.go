@@ -153,13 +153,13 @@ func (s *Releases) Compare(ctx context.Context, slug, code string, from, to int6
 }
 
 func (s *Releases) broadcast(ctx context.Context, slug, code string, release domain.Release) {
-	select {
-	case <-ctx.Done():
-		return
-	default:
-		s.hub.Publish(event.Event{
-			Application: slug, Environment: code, Version: release.Version,
-			Checksum: release.Checksum, Operation: string(release.Operation),
-		})
-	}
+	go func() {
+		select {
+		case <-ctx.Done():
+			return
+		case <-time.After(time.Millisecond):
+			s.hub.Publish(event.Event{Application: slug, Environment: code, Version: release.Version,
+				Checksum: release.Checksum, Operation: string(release.Operation)})
+		}
+	}()
 }
